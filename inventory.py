@@ -56,7 +56,7 @@ def render_fig(fig):
 
 
 # ------------------------------------------------------------
-# DATA LOADING & CLEANING (cached — runs once, not on every rerun)
+# DATA LOADING & CLEANING (cached - runs once, not on every rerun)
 # Mirrors CELLS 1, 6 and 7 of the original analysis.
 # ------------------------------------------------------------
 @st.cache_data(show_spinner="Loading and preparing inventory.csv ...")
@@ -99,7 +99,7 @@ def load_data(path: str = "inventory.csv"):
 
 
 # ------------------------------------------------------------
-# SECTION 0 — OVERVIEW & DATA QUALITY (EDA)
+# SECTION 0 - OVERVIEW & DATA QUALITY (EDA)
 # ------------------------------------------------------------
 def section_overview(df_raw, df):
     st.header("1 · Dataset Overview & Data Preparation")
@@ -169,11 +169,11 @@ power the analyses that follow.
         st.markdown(
             """
 - **Dates** (`DMND_WEEK_STRT_DATE`, `VRSN_WEEK_STRT_DATE`) parsed with an
-  explicit `dd-mm-yyyy` format — never guessed, to avoid silent day/month swaps.
+  explicit `dd-mm-yyyy` format - never guessed, to avoid silent day/month swaps.
 - **IDs** (`CHANNEL_ID`, `PRODUCT_ID`, `COMP_ITEM_ID`) kept as **strings**:
   they look numeric but must never be summed or averaged.
 - **Low-cardinality text** converted to `category` dtype for memory and speed.
-- **`DW_PKG_UPD_DTS` dropped** — a truncated data-warehouse load timestamp
+- **`DW_PKG_UPD_DTS` dropped** - a truncated data-warehouse load timestamp
   with no analytical value.
 - **Derived fields:** forecast horizon (demand week − version week),
   calendar helpers, and a zero-forecast flag used throughout this dashboard.
@@ -182,7 +182,7 @@ power the analyses that follow.
 
 
 # ------------------------------------------------------------
-# SECTION 1 — FORECASTED DEMAND BY COMMODITY
+# SECTION 1 - FORECASTED DEMAND BY COMMODITY
 # ------------------------------------------------------------
 def section_demand_by_commodity(df):
     st.header("2 · Forecasted Demand by Commodity")
@@ -200,7 +200,7 @@ consumption. Exact totals are labeled at the end of each bar.
 
 **Important caveat:** this reflects *forecasted demand*, not stock on hand.
 The dataset contains planning quantities (MRP_FCST_QTY), so this view answers
-"which commodities drive the most material requirements?" — not "how much
+"which commodities drive the most material requirements?" - not "how much
 inventory do we currently hold?"
 
 **Why it matters:** commodities at the top of this chart are where forecast
@@ -242,12 +242,12 @@ bottom half of this chart.
 mice, keyboards) are largely low-cost commodity items, while lower-volume
 categories such as LCD (412K), SSD (189K), and Graphic Card (176K) carry far
 higher unit cost and supply risk. This chart should be read alongside
-lead-time and cost data — planning priority is a function of
+lead-time and cost data - planning priority is a function of
 volume × cost × replenishment risk, not volume alone.
 
 **3. The long tail is thin.** The bottom ten categories combined contribute
 under 3% of total volume. These items add planning lines and catalog
-maintenance effort while moving little material — candidates for simplified
+maintenance effort while moving little material - candidates for simplified
 planning policies (min/max or reorder point) rather than weekly forecast
 review.
 
@@ -263,7 +263,7 @@ as reliable as category labels.
 
 
 # ------------------------------------------------------------
-# SECTION 2 — LEAD TIME ANALYSIS
+# SECTION 2 - LEAD TIME ANALYSIS
 # ------------------------------------------------------------
 def section_lead_time(df):
     st.header("3 · Lead Time Analysis by Commodity")
@@ -272,12 +272,12 @@ def section_lead_time(df):
         """
 **Business purpose.** Two complementary views of procurement lead times, in weeks.
 
-**Left — Average lead time per commodity.** A quick ranking of which commodity
+**Left - Average lead time per commodity.** A quick ranking of which commodity
 categories take longest to replenish, sorted from slowest to fastest.
 Commodities on the left of this chart are the ones where demand surprises are
 hardest to recover from.
 
-**Right — Lead time vs forecasted volume.** Each point is a commodity,
+**Right - Lead time vs forecasted volume.** Each point is a commodity,
 positioned by its average lead time and its total forecasted volume
 (log scale). This view answers the question that matters for risk: *does the
 volume live in slow or fast commodities?*
@@ -329,7 +329,7 @@ simple catalog average.
         st.markdown(
             """
 **1. Lead times are tiered planning parameters, not measured values.**
-Lead times cluster at fixed levels — 8, 13, and 17–24 weeks — rather than
+Lead times cluster at fixed levels - 8, 13, and 17–24 weeks - rather than
 varying continuously. This reflects how the planning system is maintained:
 standard lead-time tiers assigned per commodity. The practical implication is
 that true supplier variability is invisible in this extract; the values
@@ -337,13 +337,13 @@ represent planning assumptions, and any supplier performing worse than the
 assumed tier is a hidden risk.
 
 **2. The highest-volume commodities sit in the mid lead-time band.**
-ODD Mechanical (~2.9M units), ODM Mechanical, and Memory — the three biggest
-demand drivers — all carry ~13-week lead times. Roughly a quarter's worth of
+ODD Mechanical (~2.9M units), ODM Mechanical, and Memory - the three biggest
+demand drivers - all carry ~13-week lead times. Roughly a quarter's worth of
 pipeline sits behind each unit of these forecasts: a demand signal error
 today cannot be corrected on the supply side for three months. These
 commodities justify the tightest forecast review cadence in the portfolio.
 
-**3. The longest lead times belong to low-volume items — with two exceptions
+**3. The longest lead times belong to low-volume items - with two exceptions
 worth watching.** Mobile Computing Cart (24 wks), Controller Card (22 wks),
 and Projector (17 wks) are slow but small, limiting their aggregate impact.
 However, **Graphic Card (~176K units at 19 weeks)** and **Nic Card
@@ -355,11 +355,11 @@ lead-time reduction.
 **4. The fast movers are well-positioned.** Wireless, HDD, SSD, Mouse, and
 Docking all sit at 8 weeks with substantial volumes (150K–600K units). Their
 short pipelines mean forecast errors are recoverable within the planning
-cycle — these categories can tolerate leaner buffers and more reactive
+cycle - these categories can tolerate leaner buffers and more reactive
 planning.
 
 **5. The quiet outlier: CORD.** At 1.1M units with a 10-week lead time, CORD
-carries top-4 volume with below-average replenishment risk — an example of a
+carries top-4 volume with below-average replenishment risk - an example of a
 category where high volume does not translate into high planning risk.
 Contrast with Graphic Card: six times less volume but nearly double the
 pipeline.
@@ -368,7 +368,7 @@ pipeline.
 
 
 # ------------------------------------------------------------
-# SECTION 3 — DEMAND OVER TIME
+# SECTION 3 - DEMAND OVER TIME
 # ------------------------------------------------------------
 def section_demand_over_time(df):
     st.header("4 · Forecasted Demand Over Time")
@@ -377,19 +377,19 @@ def section_demand_over_time(df):
         """
 **Business purpose.**
 
-**Top — Total weekly forecasted demand.** Every forecast record is aggregated
+**Top - Total weekly forecasted demand.** Every forecast record is aggregated
 by demand week to show the overall shape of the planning horizon:
 seasonality, ramp-ups for new products, end-of-life declines, and any abrupt
 spikes or cliffs that warrant investigation.
 
-**Bottom — Weekly demand for the top 5 commodities (stacked area).** The same
+**Bottom - Weekly demand for the top 5 commodities (stacked area).** The same
 timeline, broken out by the five commodity categories with the highest total
 volume. The overall height of the stack tracks their combined demand, and
 each colored band shows how much a single commodity contributes in a given
 week.
 
 **How to read it:** look for shifts in the *mix*, not just the total. A stable
-total can hide one commodity ramping down while another ramps up — a pattern
+total can hide one commodity ramping down while another ramps up - a pattern
 typical of product transitions, where new platforms replace old ones
 component by component.
 
@@ -428,7 +428,7 @@ should not be read as a trend.
 
     fig, ax = plt.subplots(figsize=(11, 5))
     weekly_comm.plot.area(ax=ax, alpha=0.85, cmap="tab10")
-    ax.set_title("Weekly Forecasted Demand — Top 5 Commodities")
+    ax.set_title("Weekly Forecasted Demand - Top 5 Commodities")
     ax.set_ylabel("Units")
     ax.set_xlabel("Demand Week")
     fmt_thousands(ax)
@@ -440,19 +440,19 @@ should not be read as a trend.
         st.subheader("Key Insights")
         st.markdown(
             """
-**1. The overall arc — read with caution.** Weekly forecasted demand rises
+**1. The overall arc - read with caution.** Weekly forecasted demand rises
 from ~80K units in October 2015, peaks between April and July 2016 at
 300–350K units per week, then declines steadily to near zero by April 2017.
 Before interpreting this as a business cycle, note the structural caveat
-below (#4) — part of this shape is likely an artifact of how forecast
+below (#4) - part of this shape is likely an artifact of how forecast
 extracts are built.
 
 **2. Peak planning season: Q2 2016.** The highest sustained demand sits in
 April–July 2016, with the single largest week (~350K units) in mid-July. If
 this window reflects real demand concentration, it aligns with typical
 PC-industry cycles (back-to-school build ahead of Q3 and corporate refresh
-activity), and it defines the period where component supply — especially the
-13-week lead-time commodities — is under the most pressure. Materials for a
+activity), and it defines the period where component supply - especially the
+13-week lead-time commodities - is under the most pressure. Materials for a
 July peak must be committed by April.
 
 **3. Demand is volatile week to week.** Swings of 50–150K units between
@@ -465,7 +465,7 @@ chasing individual weekly signals.
 artifact.** This dataset aggregates multiple forecast versions
 (VRSN_WEEK_STRT_DATE). Weeks in the middle of the horizon are covered by many
 forecast snapshots and accumulate quantity from each, while weeks at the
-edges are covered by few — inflating the center and deflating the extremes.
+edges are covered by few - inflating the center and deflating the extremes.
 The near-zero tail in early 2017 most likely reflects fewer forecast versions
 reaching that far ahead, not a collapse in expected demand.
 Version-controlled views (single-snapshot or latest-version-only) are
@@ -475,7 +475,7 @@ required before this curve can be read as a true demand profile.
 
 
 # ------------------------------------------------------------
-# SECTION 4 — SUPPLY CHAIN TYPE MIX
+# SECTION 4 - SUPPLY CHAIN TYPE MIX
 # ------------------------------------------------------------
 def section_supply_chain_mix(df):
     st.header("5 · Supply Chain Type Mix: CTO vs BTO vs BTP vs BTS")
@@ -491,19 +491,19 @@ from most order-driven to most forecast-driven:
 - **BTO (Build to Order):** predefined configurations built only when an
   order arrives.
 - **BTP (Build to Plan):** production is triggered by the demand plan rather
-  than firm orders — components and builds are committed against the forecast
+  than firm orders - components and builds are committed against the forecast
   before orders exist.
 - **BTS (Build to Stock):** standard units built to forecast and held as
   finished inventory. Easiest to execute, highest inventory risk.
 
-**Left — Records by type.** The share of forecast lines each model generates —
+**Left - Records by type.** The share of forecast lines each model generates -
 a proxy for planning complexity.
 
-**Right — Forecasted units by type.** The same split measured in actual
+**Right - Forecasted units by type.** The same split measured in actual
 units. Comparing the two panels reveals asymmetry between planning effort and
 volume.
 
-**Heatmap — Commodity × supply chain type.** Where volume actually lives at
+**Heatmap - Commodity × supply chain type.** Where volume actually lives at
 the intersection of component category and fulfillment model. Dark cells are
 the heart of the plan. A commodity concentrated in BTS or BTP can be buffered
 with planned stock; the same commodity flowing mostly through CTO demands
@@ -563,10 +563,10 @@ part of the portfolio.
         st.subheader("Key Insights")
         st.markdown(
             """
-**1. This is a CTO-dominant operation — in both effort and volume.**
+**1. This is a CTO-dominant operation - in both effort and volume.**
 Configure-to-Order accounts for 58% of forecast records and roughly 8.3M of
 the ~11.6M total forecasted units (~72%). Notably, CTO's unit share *exceeds*
-its record share — the configure-to-order engine isn't a low-volume
+its record share - the configure-to-order engine isn't a low-volume
 complexity tax on the side; it is the core of the business. Component-level
 forecast accuracy is therefore the critical capability: with no
 finished-goods buffer, every forecast error in CTO lands directly on
@@ -574,7 +574,7 @@ component availability and order lead times.
 
 **2. Order-driven models carry ~90% of volume.** CTO and BTO combined
 represent about 83% of records and roughly 90% of forecasted units. This
-portfolio holds very little finished-goods inventory risk — the dominant risk
+portfolio holds very little finished-goods inventory risk - the dominant risk
 is *responsiveness*: long component lead times (the 13-week tier identified
 earlier) against demand that materializes order by order. Supply flexibility,
 supplier commitments, and component safety stock matter far more here than
@@ -583,17 +583,17 @@ finished-goods stocking policy.
 **3. BTS is small but disproportionately efficient to plan.** Build-to-Stock
 generates 13% of forecast lines for roughly 1M units (~9% of volume). These
 are the standard, predictable products where classic forecast-then-build
-logic applies — worth protecting, but not where planning effort should
+logic applies - worth protecting, but not where planning effort should
 concentrate.
 
-**4. BTP is marginal — and worth questioning.** At 4% of records and under
+**4. BTP is marginal - and worth questioning.** At 4% of records and under
 200K units (<2% of volume), Build-to-Plan is the smallest flow in the
 portfolio. A flow this thin invites a process question: does it represent a
 genuine strategic segment (e.g., ramp builds for new platforms), or legacy
 classification that could be consolidated into BTS/BTO to simplify planning
 governance?
 
-**5. The pie and the bar tell a consistent story — which is itself a
+**5. The pie and the bar tell a consistent story - which is itself a
 finding.** Record share and unit share track each other closely across all
 four types (no model consumes wildly more planning effort than its volume
 justifies). The planning workload is well-proportioned to where the business
@@ -603,7 +603,7 @@ actually is.
 
 
 # ------------------------------------------------------------
-# SECTION 5 — CHANNEL CONCENTRATION
+# SECTION 5 - CHANNEL CONCENTRATION
 # ------------------------------------------------------------
 def section_channels(df):
     st.header("6 · Channel Concentration: Top 15 Channels")
@@ -611,7 +611,7 @@ def section_channels(df):
     st.markdown(
         """
 **Business purpose.** Total forecasted units aggregated by demand channel,
-showing only the 15 largest channels — the full channel list is typically
+showing only the 15 largest channels - the full channel list is typically
 long-tailed, and the tail adds noise rather than insight at this level.
 
 **How to read it:** each bar is a channel's total forecasted volume over the
@@ -621,8 +621,8 @@ each code.
 
 **The Pareto check (below the chart):** across all channels in the dataset,
 this calculates how many are needed to cover 80% of total forecasted demand.
-A small number signals a concentrated demand base — efficient to plan, but
-exposed if a key channel shifts. A large number signals fragmented demand —
+A small number signals a concentrated demand base - efficient to plan, but
+exposed if a key channel shifts. A large number signals fragmented demand -
 more resilient, but harder to forecast accurately since each channel's signal
 is thinner.
 
@@ -649,7 +649,7 @@ forecasting and aggregate buffers than by manual attention.
     plt.tight_layout()
     render_fig(fig)
 
-    # Pareto check — computed live and displayed as a metric
+    # Pareto check - computed live and displayed as a metric
     ch_total = df.groupby("CHANNEL_ID")["MRP_FCST_QTY"].sum().sort_values(ascending=False)
     cum_share = ch_total.cumsum() / ch_total.sum()
     n80 = int((cum_share <= 0.80).sum() + 1)
@@ -664,7 +664,7 @@ forecasting and aggregate buffers than by manual attention.
             f"""
 **1. Extreme concentration: two channels dominate everything.** Channel 1865
 (~5.5M units) and channel 2190 (~2.9M units) together account for roughly
-8.4M of the ~11.6M total forecasted units — about 70–72% of the entire plan
+8.4M of the ~11.6M total forecasted units - about 70–72% of the entire plan
 flowing through just two demand channels. This is far beyond a typical 80/20
 distribution; it is closer to a two-pillar demand structure with a long
 decorative tail.
@@ -672,11 +672,11 @@ decorative tail.
 **2. The drop-off is a cliff, not a slope.** Third place (channel 5000960,
 ~1.25M units) is less than half of second place, and from rank 4 onward no
 channel exceeds ~500K units. The bottom half of even this top-15 view
-contributes almost nothing visible at this scale — the tail beyond rank 15 is
+contributes almost nothing visible at this scale - the tail beyond rank 15 is
 operationally negligible in volume terms.
 
 **3. Concentration cuts both ways.** Practically, forecast quality for
-channels 1865 and 2190 *is* forecast quality for the company — a
+channels 1865 and 2190 *is* forecast quality for the company - a
 collaborative planning process with the owners of these two demand streams
 would cover most of the plan with minimal effort. The flip side is fragility:
 any structural shift in either channel (a program ending, a customer segment
@@ -685,8 +685,8 @@ Concentration risk at this level typically deserves explicit contingency
 planning, not just acknowledgment.
 
 **4. Interpretation caveat: channel IDs may not be commercial channels.** The
-ID structure suggests two families — short legacy codes (1865, 2190, 5364)
-and a 5000xxx series — which may represent planning entities, regions, or
+ID structure suggests two families - short legacy codes (1865, 2190, 5364)
+and a 5000xxx series - which may represent planning entities, regions, or
 fulfillment sites rather than sales channels in the commercial sense. The
 concentration finding stands either way, but *what* is concentrated (a
 customer base vs. a fulfillment node) changes the business response.
@@ -700,7 +700,7 @@ forecasted demand** (computed live from the dataset above).
 
 
 # ------------------------------------------------------------
-# SECTION 6 — RISK QUADRANT & WATCHLIST
+# SECTION 6 - RISK QUADRANT & WATCHLIST
 # ------------------------------------------------------------
 def section_risk_quadrant(df):
     st.header("7 · Risk Quadrant: Lead Time vs Forecasted Demand")
@@ -711,22 +711,22 @@ def section_risk_quadrant(df):
 procurement lead time (x-axis, weeks) and total forecasted demand across the
 planning horizon (y-axis, log scale). Colors indicate commodity. Items with
 zero total forecast are excluded. Where an item shows more than one lead time
-in the data, the maximum is used — a deliberately conservative choice for
+in the data, the maximum is used - a deliberately conservative choice for
 risk assessment.
 
 The dashed red lines mark the 75th percentile on each axis, dividing
 components into four risk profiles:
 
-- **Top-right — high demand, long lead time:** the critical quadrant. A
+- **Top-right - high demand, long lead time:** the critical quadrant. A
   forecast miss here cannot be recovered quickly, and the volume at stake is
   large. These items warrant safety stock, supplier commitments, or dual
   sourcing.
-- **Top-left — high demand, short lead time:** high volume but recoverable;
+- **Top-left - high demand, short lead time:** high volume but recoverable;
   replenishment can react within the planning cycle.
-- **Bottom-right — low demand, long lead time:** slow movers with long
+- **Bottom-right - low demand, long lead time:** slow movers with long
   pipelines. Individually small, but prone to dead stock and end-of-life
   write-offs.
-- **Bottom-left — low demand, short lead time:** minimal planning attention
+- **Bottom-left - low demand, short lead time:** minimal planning attention
   required.
 
 **Method note:** thresholds are relative (75th percentile), so the quadrants
@@ -784,9 +784,9 @@ fixed cutoffs that go stale as the business changes.
         })
     )
 
-    st.subheader(f"⚠️ Watchlist — {len(watchlist)} items with high lead time AND high demand")
+    st.subheader(f"⚠️ Watchlist - {len(watchlist)} items with high lead time AND high demand")
     st.markdown(
-        "The top-right quadrant extracted as a ranked table — the specific part "
+        "The top-right quadrant extracted as a ranked table - the specific part "
         "numbers that combine high volume with slow replenishment. This is the "
         "shortlist a planner would bring to a supplier review."
     )
@@ -805,29 +805,29 @@ fixed cutoffs that go stale as the business changes.
             """
 **1. The vertical stripes confirm it: lead time is a tiered parameter.**
 Components line up at fixed lead-time values (8, 10, 13, 15, 17–19, 22, 24
-weeks) rather than spreading continuously — item-level confirmation of the
+weeks) rather than spreading continuously - item-level confirmation of the
 finding from the commodity view. The risk analysis is therefore about *which
 tier an item was assigned to*, not measured supplier behavior.
 
 **2. The danger zone is real and populated.** The top-right quadrant
 (≥17 weeks lead time, above the demand threshold) contains a meaningful
-cluster of components — including items in the 10⁴–10⁵ unit range at 17–19
+cluster of components - including items in the 10⁴–10⁵ unit range at 17–19
 weeks (visible among LCD, Keyboard, Graphic Card, and Speaker families, plus
 Nic Card items out at 22 weeks). These are parts where four to five months of
 pipeline sit behind substantial volume: a forecast miss discovered today was
 baked in last quarter. The watchlist above names them individually.
 
-**3. The bulk of high-volume items sit at 13 weeks or less — moderate, not
+**3. The bulk of high-volume items sit at 13 weeks or less - moderate, not
 safe.** The densest high-demand columns are at 8, 10, and 13 weeks. Thirteen
 weeks is still a full quarter of exposure; the portfolio's center of gravity
 is "recoverable with effort," not "reactive." Only the 8-week columns
 (Wireless, HDD, SSD, Docking families) offer genuinely fast correction
 cycles.
 
-**4. Long lead time correlates with low volume — mostly.** The 22- and
+**4. Long lead time correlates with low volume - mostly.** The 22- and
 24-week columns are sparsely populated and skew low-demand (Controller Card,
 Mobile Computing Cart): slow parts the business has largely kept small. The
-exceptions — high-volume items stranded in slow tiers — are precisely what
+exceptions - high-volume items stranded in slow tiers - are precisely what
 the quadrant isolates, and they are few enough to manage individually rather
 than by policy.
 
@@ -836,14 +836,14 @@ time span five orders of magnitude in demand (from single units to 10⁵–10⁶
 Uniform planning rules per lead-time tier would therefore be badly
 miscalibrated: the top of each column merits item-level attention and
 supplier commitments, while the bottom of the same column is candidate
-material for catalog cleanup — components forecasted at one to ten units
+material for catalog cleanup - components forecasted at one to ten units
 across an entire year, which cost more to plan than they move.
 """
         )
 
 
 # ------------------------------------------------------------
-# SECTION 7 — ZERO-FORECAST CONCENTRATION (DATA QUALITY)
+# SECTION 7 - ZERO-FORECAST CONCENTRATION (DATA QUALITY)
 # ------------------------------------------------------------
 def section_zero_forecast(df):
     st.header("8 · Data Quality Check: Zero-Forecast Concentration")
@@ -855,7 +855,7 @@ view measures how much of each commodity's data actually carries a signal.
 Each bar shows the percentage of forecast records where the planned quantity
 is exactly zero.
 
-Zero rows are common in MRP extracts and are not errors — they appear when a
+Zero rows are common in MRP extracts and are not errors - they appear when a
 component is set up in the planning system but has no demand in a given
 week/channel/version combination (phase-in items not yet ramped, phase-out
 items winding down, or configurations kept active for service coverage).
@@ -864,13 +864,13 @@ items winding down, or configurations kept active for service coverage).
 concentrated in a small subset of its records. Its averages and trends are
 driven by that active subset, so apparent volatility may reflect sparse data
 rather than volatile demand. Commodities with low zero rates have broad,
-consistent demand across their records — their charts can be read with more
+consistent demand across their records - their charts can be read with more
 confidence.
 
 **Why it matters:** this is the reliability legend for the rest of the
 dashboard. It tells the reader which commodity-level findings rest on dense
 data and which should be treated as directional. It also flags potential
-catalog hygiene issues — a commodity where most records are zero may be
+catalog hygiene issues - a commodity where most records are zero may be
 carrying many inactive part numbers that inflate planning workload without
 contributing volume.
 """
@@ -898,17 +898,17 @@ contributing volume.
         st.markdown(
             """
 **1. Zero rows are the norm, not the exception.** Every commodity in the
-portfolio carries a substantial share of zero-quantity forecast records —
+portfolio carries a substantial share of zero-quantity forecast records -
 from ~16% (Security Lock) up to ~67% (Speaker), with most categories sitting
 between 40% and 60%. Roughly half of the typical commodity's forecast lines
 carry no demand signal at all. This is structural to how MRP explodes
-forecasts across product, channel, and week combinations — but it means every
+forecasts across product, channel, and week combinations - but it means every
 average and trend in this dashboard is driven by the active subset of
 records.
 
 **2. The noisiest commodities are the highest-volume ones.** Speaker (67%),
 MOUSE (~59%), Memory (~59%), ODD Mechanical (~59%), and ADPT (~59%) top the
-zero-rate ranking — and three of those are also among the biggest demand
+zero-rate ranking - and three of those are also among the biggest demand
 drivers in the portfolio. This is the opposite of the intuitive guess. The
 mechanism: universal, high-attach components are set up across nearly every
 product and channel combination, so they accumulate enormous numbers of
@@ -916,7 +916,7 @@ placeholder lines, most of which are zero in any given week. High volume
 concentrated in a minority of active lines.
 
 **3. The cleanest data belongs to the niche items.** Security Lock (~16%),
-Projector (~22%), and Cable (~26%) show the lowest zero rates — narrow-purpose
+Projector (~22%), and Cable (~26%) show the lowest zero rates - narrow-purpose
 components set up only where genuine demand exists. Their charts can be read
 at close to face value, while conclusions about the 55%+ group should be
 validated against active records only.
@@ -926,14 +926,14 @@ of empty lines.** If roughly half of 106K forecast records are zero, planners
 and systems are processing tens of thousands of lines per cycle that carry no
 signal. Two practical responses: (a) filter analytical views to active
 records to sharpen signal, and (b) review whether long-zero component/channel
-combinations can be deactivated in the planning master — catalog hygiene that
+combinations can be deactivated in the planning master - catalog hygiene that
 reduces noise at the source.
 
 **5. Reliability guide for this dashboard.** As a rule of thumb applied to
 the preceding sections: findings about Cable, Projector, Network Card, and
 Security Lock rest on dense data; findings about Speaker, MOUSE, Memory, and
 the mechanical categories describe real volume but sparse-and-spiky record
-patterns — their week-level movements deserve more smoothing and less literal
+patterns - their week-level movements deserve more smoothing and less literal
 reading.
 """
         )
@@ -990,7 +990,7 @@ An end-to-end analysis of an MRP component forecast extract (~106K records):
 demand concentration by commodity and channel, lead-time exposure,
 fulfillment-model mix (CTO/BTO/BTP/BTS), component-level supply risk, and the
 data-quality checks that qualify every finding. Use the sidebar to navigate
-through the analysis in its intended order — each section states its business
+through the analysis in its intended order - each section states its business
 purpose, presents the evidence, and closes with actionable insights.
 """
     )
